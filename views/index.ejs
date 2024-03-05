@@ -1,0 +1,18 @@
+<%- include('partials/html-start.ejs') %>
+
+<h1>Welcome to Icecream Shop!</h1>
+    
+<p><%= icecreamData.length %></p>
+
+<h3>Add New Icecream</h3>
+
+<form method="POST" action="/addIcecream">
+    <label for="IcecreamName">Icecream Name</label>
+    <input name="IcecreamName" placeholder= " new icecream">
+
+    <input type="submit" value="add Iccream" />
+</form>
+
+
+
+<%- include('partials/html-end.ejs') %>
