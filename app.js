@@ -3,12 +3,14 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 5500;
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const bodyParser = require('body-parser')
 // set the view engine to ejs
 let path = require('path');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static("public"))
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient("mongodb+srv://abc:jean0855!@cluster0.snv9zih.mongodb.net/", {
@@ -19,13 +21,13 @@ const client = new MongoClient("mongodb+srv://abc:jean0855!@cluster0.snv9zih.mon
   }
 });
 
-async function getIcecreamData() {
+async function getHotelData() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    const result = await client.db("icecream-shop").collection("icecream-collection").find().toArray();
+    const result = await client.db("hotel-database").collection("hotel-collection").find().toArray();
 
     console.log("mongo call await inside function: ", result);
 
@@ -34,7 +36,7 @@ async function getIcecreamData() {
     //console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } 
   catch(err) {
-    console.log("getIcecreamData() error:", err);
+    console.log("getHotelData() error:", err);
   }
   finally {
     // Ensures that the client will close when you finish/error
@@ -45,31 +47,80 @@ async function getIcecreamData() {
 // read from mongo
 app.get('/', async (req, res) => {
 
-    let result = await getIcecreamData().catch(console.error); 
+    let result = await getHotelData().catch(console.error); 
 
-    console.log("getIcecreamData() result:", result);
+    console.log("getHotelData() result:", result);
 
     res.render('index', {
-      pageTitle: "Icecream shop",
-      icecreamData: result 
+      pageTitle: "Hotel Reviews",
+      hotelData: result 
   
     }); 
 });
   
 
 // create to mongo
-  app.post('(/addIcecream)', async (req, res) => {
+  app.post('/addHotel', async (req, res) => {
   
     try {
-      // console.log("req.body: ", req.body) 
+
       client.connect; 
-      const collection = client.db("icecream-shop").collection("icecream-collection");
+      const collection = client.db("hotel-database").collection("hotel-collection");
       
       //draws from body parser
       console.log(req.body);
       
       await collection.insertOne(req.body);
-      //await collection.insertOne({IcecreamName: req.body.IcecreamName});
+
+        
+      res.redirect('/');
+    }
+    catch(err){
+      console.log(err)
+    }
+    finally{
+    }
+  
+  });
+  
+  
+  app.post('/updateHotel', async (req, res) => {
+  
+    try {
+      console.log("req.body: ", req.body) 
+      
+      client.connect; 
+      const collection = client.db("hotel-database").collection("hotel-collection");
+      let result = await collection.findOneAndUpdate( 
+        {"_id": new ObjectId(req.body.id)}, {$set: {name: req.body.name, 
+        room_type: req.body.room_type, 
+        price: req.body.price, rating: req.body.rating, note: req.body.note}} 
+      )
+      .then(result => {
+        console.log(result); 
+        res.redirect('/');
+      })
+      .catch(error => console.error(error))
+    }
+    finally{
+    }
+  
+  });
+  
+  app.post('/deleteHotel', async (req, res) => {
+  
+    try {
+      client.connect; 
+      const collection = client.db("hotel-database").collection("hotel-collection");
+      
+      //draws from body parser
+      console.log(req.body);
+      
+      let result = await collection.findOneAndDelete( 
+        {
+          "_id":new ObjectId(req.body.id)
+        }
+      )
         
       res.redirect('/');
     }
@@ -80,54 +131,7 @@ app.get('/', async (req, res) => {
      // client.close()
     }
   
-  })
-  
-  
-  app.post('/updateDrink/:id', async (req, res) => {
-  
-    try {
-      console.log("req.parms.id: ", req.params.id) 
-      
-      client.connect; 
-      const collection = client.db("chillAppz").collection("drinkz");
-      let result = await collection.findOneAndUpdate( 
-        {"_id": ObjectId(req.params.id)}, { $set: {"size": "REALLY BIG DRINK" } }
-      )
-      .then(result => {
-        console.log(result); 
-        res.redirect('/');
-      })
-      .catch(error => console.error(error))
-    }
-    finally{
-      //client.close()
-    }
-  
-  })
-  
-  app.post('/deleteDrink/:id', async (req, res) => {
-  
-    try {
-      console.log("req.parms.id: ", req.params.id) 
-      
-      client.connect; 
-      const collection = client.db("chillAppz").collection("drinkz");
-      let result = await collection.findOneAndDelete( 
-        {
-          "_id": ObjectId(req.params.id)
-        }
-      )
-      .then(result => {
-        console.log(result); 
-        res.redirect('/');
-      })
-      .catch(error => console.error(error))
-    }
-    finally{
-      //client.close()
-    }
-  
-  })
+  });
 
 
 

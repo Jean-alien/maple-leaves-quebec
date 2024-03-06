@@ -1,0 +1,86 @@
+<%- include('partials/html-start.ejs') %>
+<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+
+
+        <h3>New hotel Description</h3>
+        <form method="POST" action="/addHotel">
+            <label for="name">Hotel Name: </lable>
+            <input name="name" placeholder="Name of a hotel">
+            <br><br>
+            <label for="room_type">Room Type: </label>
+            <input name="room_type" placeholder="Room Type">
+            <br><br>
+            <label for="price">Price per night: $</label>
+            <input name="price" placeholder="Price per night">
+            <br><br>
+            <label for="rating">Rating: </label>
+            <input name="rating" placeholder="/5">
+            <br><br>
+            <label for="note">Notes: </label>
+            <input name="note" placeholder="any comments...?">
+            <br><br>
+            <button type="submit">Add Hotel Experiences</button>
+        </form>
+
+
+
+
+<!----
+<% for (var i=0; i< hotelData.length; i++ ) { %>
+    <p><%= hotelData.length %> Hotel Reviews so far...</p>
+    <h3>Hotels</h3>
+            <p>Hotel Name: <%= hotelData[i].name %><br>
+            Room Type: <%= hotelData[i].room_type %><br>
+            Price per night: <%= hotelData[i].price %><br>
+            Rating: <%= hotelData[i].rating %><br>
+            Notes: <%= hotelData[i].notes %></p>
+            !-->
+            
+<% for (var i=0; i < hotelData.length; i++) { %>
+<form method="POST" action="/updateHotel">
+<input type="hidden" id="id" name="id" value="<%= hotelData[i]._id %>"></input>
+<input type="text" name="name" value="<%= hotelData[i].name %>">
+<input type="text" name="room_type" value="<%= hotelData[i].room_type %>">
+<input type="text" name="price" value="<%= hotelData[i].price %>">
+<input type="text" name="rating" value="<%= hotelData[i].rating %>">
+<input type="text" name="notes" value="<%= hotelData[i].notes %>">
+<input type="submit" >Update Hotel Reviews</button>
+</form>
+<% } %>
+
+<!---
+    <br>
+        <div class="card col-md-4">
+            <h3>Update your hotel Suggestion</h3>
+
+                
+                    <form method="POST">
+                        <input type="hidden" id="id" name="id" value="<%= hotelData[i]._id %>"></input>
+                        <label for="name"> hotel Suggester:</label>
+                        <input type="text" id="name" name="name" value="<%= hotelData[i].name %>"></input>
+                        <br><br>
+                        <label for="hotelTitle">hotel Title: </label>
+                        <input type="text" id="hotelTitle" name="hotelTitle"value="<%= hotelData[i].hotelTitle %>">
+                        <br><br>
+                        <label for="rating">Your Rating: </label>
+                        <br><br>
+                        <textarea id="rating" name="rating" value="<%= hotelData[i].rating %>" rows="5" cols="30"></textarea>
+                        <br><br>
+                        <button class="btn btn-success" type="submit" formaction="/updatehotelSuggestion">Update hotel Title</button>
+                        <button class="btn btn-warning" type="submit" formaction="/deletehotelSuggestion">Delete hotel Title</button>
+                    </form>
+                    <br>
+        </div>
+!-->
+
+
+    <br>
+
+<footer> 
+    <a href="/send">send</a> |
+
+    <a href="https://github.com/Rastifer/urban-engine-quebec" target="_blank">Source Code</a>
+
+</footer>
+
+<%- include('partials/html-end.ejs') %>
